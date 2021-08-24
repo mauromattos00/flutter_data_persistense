@@ -1,3 +1,5 @@
+import 'package:bytebank/components/progress_indicator.dart';
+import 'package:bytebank/components/contact_item.dart';
 import 'package:bytebank/database/dao/contact_dao.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/screens/contact_form.dart';
@@ -16,40 +18,45 @@ class _ContactListState extends State<ContactList> {
   final ContactDao _dao = ContactDao();
 
   Widget _handleConnectionState(AsyncSnapshot snapshot) {
+    final Widget widget;
+
     switch (snapshot.connectionState) {
       case ConnectionState.none:
-        return Text('Unknown Error');
+        widget = Text('Unknown Error');
+        break;
 
       case ConnectionState.active:
-        return Text('Unknown Error');
+        widget = Text('Unknown Error');
+        break;
 
       case ConnectionState.waiting:
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              Text('Carregando...'),
-            ],
-          ),
-        );
+        widget = CustomProgressIndicator(context: context);
+        break;
 
       case ConnectionState.done:
         final List<Contact> contactList = snapshot.data;
 
-        return ListView.builder(
+        widget = ListView.builder(
           itemCount: contactList.length,
           itemBuilder: (BuildContext context, int index) {
-            final Contact contact = contactList[index];
-            return ContactItem(contact: contact);
+            return _renderContactItem(contactList, index);
           },
         );
     }
+
+    return _renderAnimationSwitcher(widget);
+  }
+
+  Widget _renderAnimationSwitcher(Widget child) {
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 200),
+      child: child,
+    );
+  }
+
+  ContactItem _renderContactItem(List<Contact> contactList, int index) {
+    final Contact contact = contactList[index];
+    return ContactItem(contact: contact);
   }
 
   @override
@@ -68,46 +75,10 @@ class _ContactListState extends State<ContactList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
-              .push(
-                MaterialPageRoute(
-                  builder: (context) => ContactForm(),
-                ),
-              )
+              .push(MaterialPageRoute(builder: (context) => ContactForm()))
               .then((value) => setState(() => widget.createState()));
         },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}
-
-class ContactItem extends StatelessWidget {
-  final Contact contact;
-
-  const ContactItem({
-    Key? key,
-    required this.contact,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(
-          contact.fullName,
-          style: TextStyle(
-            fontSize: 24.0,
-          ),
-        ),
-        subtitle: Text(
-          contact.accountNumber.toString(),
-          style: TextStyle(
-            fontSize: 16.0,
-          ),
-        ),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
