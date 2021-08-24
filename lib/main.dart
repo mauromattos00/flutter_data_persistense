@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 void main() => runApp(Bytebank());
 
 class Bytebank extends StatelessWidget {
-
   final _theme = ThemeData(
-    primaryColor: Colors.green[900],
-    accentColor: Colors.greenAccent[700],
+    primaryColor: Colors.purple[900],
+    accentColor: Colors.purple[800],
     buttonTheme: ButtonThemeData(
-      buttonColor: Colors.green[900],
+      buttonColor: Colors.purple[900],
       textTheme: ButtonTextTheme.primary,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        primary: Colors.green[900],
+        primary: Colors.purple[900],
       ),
     ),
   );
@@ -27,4 +26,3 @@ class Bytebank extends StatelessWidget {
     );
   }
 }
-
