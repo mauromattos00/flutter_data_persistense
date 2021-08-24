@@ -15,24 +15,15 @@ class ContactDao {
       '$_accountNumber INTEGER)';
 
   Future<int> save(Contact contact) async {
+    final Map<String, dynamic> contactMap = _toMap(contact);
     final Database database = await createDatabase();
-    final Map<String, dynamic> contactMap = Map();
-    contactMap[_name] = contact.fullName;
-    contactMap[_accountNumber] = contact.accountNumber;
     return database.insert(_tableName, contactMap);
   }
 
   Future<List<Contact>> findAll() async {
     final Database db = await createDatabase();
     final List<Map<String, dynamic>> result = await db.query(_tableName);
-    final List<Contact> contactList = [];
-    for (Map<String, dynamic> row in result) {
-      final Contact contact = Contact(
-        fullName: row[_name],
-        accountNumber: row[_accountNumber],
-      );
-      contactList.add(contact);
-    }
+    final List<Contact> contactList = _toList(result);
 
     return Future.delayed(Duration(seconds: 1), () {
       return contactList;
@@ -47,14 +38,14 @@ class ContactDao {
   }
 
   List<Contact> _toList(List<Map<String, dynamic>> result) {
-    final List<Contact> contacts = [];
+    final List<Contact> contactList = [];
     for (Map<String, dynamic> row in result) {
       final Contact contact = Contact(
         fullName: row[_name],
         accountNumber: row[_accountNumber],
       );
-      contacts.add(contact);
+      contactList.add(contact);
     }
-    return contacts;
+    return contactList;
   }
 }
