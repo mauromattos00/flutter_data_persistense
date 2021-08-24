@@ -1,6 +1,7 @@
 import 'package:bytebank/components/dashboard_tile.dart';
 import 'package:bytebank/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({
@@ -19,7 +20,7 @@ class Dashboard extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Image.asset('assets/images/bytebank_logo.png'),
+            child: SvgPicture.asset('assets/images/app-dashboard-image.svg'),
           ),
           DashboardTile(
             icon: Icons.people,
